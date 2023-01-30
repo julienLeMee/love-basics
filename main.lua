@@ -11,8 +11,7 @@ function love.load()
   player.y = 200
   player.radius = 10
   player.speed = 1
-
-  attack = {}
+  player.life = 10
 
   -- floor1 = love.graphics.newImage("sprites/floor_1.png")
   floor2 = love.graphics.newImage("sprites/floor_3.png")
@@ -31,12 +30,24 @@ function love.load()
 
   player.anim = player.animation.up
 
-  -- attack.spriteSheet = love.graphics.newImage("sprites/slash_effect.png")
-  -- attack.grid = anim8.newGrid(16, 1, attack.spriteSheet:getWidth(), attack.spriteSheet:getHeight())
-  -- attack.animation = {}
-  -- attack.animation.down = anim8.newAnimation(attack.grid('1-3', 1), 10)
-  -- attack.anim = player.animation.down
+  -- créer une animation d'atttaque avec le sprite slash_effect:
+  attack = {}
+  attack.spriteSheet = love.graphics.newImage("sprites/effects/slash-effect-right.png")
+  -- attack.spriteSheet2 = love.graphics.newImage("sprites/effects/slash-effect-left.png")
+  -- attack.spriteSheet3 = love.graphics.newImage("sprites/effects/slash-effect-up.png")
+  -- attack.spriteSheet4 = love.graphics.newImage("sprites/effects/slash-effect-down.png")
+  attack.grid = anim8.newGrid(16, 16, attack.spriteSheet:getWidth(), attack.spriteSheet:getHeight())
+  -- attack.grid2 = anim8.newGrid(16, 16, attack.spriteSheet2:getWidth(), attack.spriteSheet2:getHeight())
+  -- attack.grid3 = anim8.newGrid(16, 16, attack.spriteSheet3:getWidth(), attack.spriteSheet3:getHeight())
+  -- attack.grid4 = anim8.newGrid(16, 16, attack.spriteSheet4:getWidth(), attack.spriteSheet4:getHeight())
 
+  attack.animation = {}
+  attack.animation.right = anim8.newAnimation(attack.grid('1-3', 1), 0.2)
+  -- attack.animation.left = anim8.newAnimation(attack.grid2('3-1', 1), 0.2)
+  -- attack.animation.up = anim8.newAnimation(attack.grid3('1-3', 1), 0.2)
+  -- attack.animation.down = anim8.newAnimation(attack.grid4('1-3', 1), 0.2)
+
+  attack.anim = attack.animation.right
 
   --ENEMY
   table.insert(enemies, 1, Enemy())
@@ -47,47 +58,68 @@ end
 
 function love.update(dt)
   local isMoving = false
-  -- local isAttack = false
+  local isAttack = false
 
   if love.keyboard.isDown("right") then
       player.x = player.x + player.speed
       player.anim = player.animation.right
       isMoving = true
+
+      -- if love.keyboard.isDown("space") then
+      --   attack.anim = attack.animation.right
+      --   isAttack = true
+      -- end
   end
 
   if love.keyboard.isDown("left") then
       player.x = player.x - player.speed
       player.anim = player.animation.left
       isMoving = true
+
+      -- if love.keyboard.isDown("space") then
+      --   attack.anim = attack.animation.left
+      --   isAttack = true
+      -- end
   end
 
   if love.keyboard.isDown("down") then
       player.y = player.y + player.speed
       player.anim = player.animation.down
       isMoving = true
+
+      -- if love.keyboard.isDown("space") then
+      --   attack.anim = attack.animation.down
+      --   isAttack = true
+      -- end
   end
 
   if love.keyboard.isDown("up") then
       player.y = player.y - player.speed
       player.anim = player.animation.up
       isMoving = true
+
+      -- if love.keyboard.isDown("space") then
+      --   attack.anim = attack.animation.up
+      --   isAttack = true
+      -- end
   end
 
   if love.keyboard.isDown("space") then
-      attack.anim = attack.animation.down
-      isAttack = true
+    attack.anim = attack.animation.right
+    isAttack = true
   end
+
 
   if isMoving == false then
     player.anim:gotoFrame(2)
   end
 
-  -- if isAttack == false then
-  --   attack.anim:gotoFrame(2)
-  -- end
+  if isAttack == false then
+    attack.anim:gotoFrame(3)
+  end
 
   player.anim:update(dt)
-  -- attack.anim:update(dt)
+  attack.anim:update(dt)
 
   --through window
 
@@ -109,6 +141,7 @@ function love.update(dt)
   for i = 1, #enemies do
     enemies[i]:move(player.x, player.y)
   end
+
 end
 
 function love.draw()
@@ -118,7 +151,8 @@ function love.draw()
     end
   end
   player.anim:draw(player.spriteSheet, player.x, player.y, nil, 2, 2)
-  -- attack.anim:draw(player.spriteSheet, (player.x +2), (player.y +2), nil, 2, 2)
+
+  attack.anim:draw(attack.spriteSheet, player.x, player.y, nil, 2, 2)
 
   for i = 1, #enemies do
     enemies[i]:draw()

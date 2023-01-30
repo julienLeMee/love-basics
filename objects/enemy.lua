@@ -4,6 +4,8 @@ function Enemy()
     local dice = math.random(1, 4)
     local enemy_x, enemy_y
     local _radius = 10
+    -- ajouter une varible pour la vie de l'ennemi:
+    local _life = 10
 
     if dice == 1 then -- come from above --
         enemy_x = math.random(_radius, love.graphics.getWidth())
@@ -24,6 +26,7 @@ function Enemy()
         radius = _radius,
         x = enemy_x,
         y = enemy_y,
+        life = _life,
 
         move = function (self, player_x, player_y)
             if player_x - self.x > 0 then
