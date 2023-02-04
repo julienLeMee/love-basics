@@ -5,6 +5,9 @@ function love.load()
   anim8 = require 'libraries/anim8'
   love.graphics.setDefaultFilter("nearest", "nearest")
 
+  sti = require "libraries/sti"
+  gameMap = sti("maps/medusaMap.lua")
+
   -- PLAYER
   player = {}
   player.x = 400
@@ -13,11 +16,7 @@ function love.load()
   player.speed = 1
   player.life = 10
 
-  -- floor1 = love.graphics.newImage("sprites/floor_1.png")
-  floor2 = love.graphics.newImage("sprites/floor_3.png")
-  -- floor3 = love.graphics.newImage("sprites/floor_6.png")
-  -- floor4 = love.graphics.newImage("sprites/floor_7.png")
-  -- floor5 = love.graphics.newImage("sprites/floor_8.png")
+  -- floor = love.graphics.newImage("sprites/floor_6.png")
 
   player.spriteSheet = love.graphics.newImage("sprites/player-sheet.png")
   player.grid = anim8.newGrid(12, 18, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
@@ -30,7 +29,6 @@ function love.load()
 
   player.anim = player.animation.up
 
-  -- créer une animation d'atttaque avec le sprite slash_effect:
   attack = {}
   attack.spriteSheet = love.graphics.newImage("sprites/effects/slash-effect-right.png")
   -- attack.spriteSheet2 = love.graphics.newImage("sprites/effects/slash-effect-left.png")
@@ -57,6 +55,9 @@ function love.load()
 end
 
 function love.update(dt)
+
+  gameMap:update(dt)
+
   local isMoving = false
   local isAttack = false
 
@@ -105,10 +106,10 @@ function love.update(dt)
   end
 
   if love.keyboard.isDown("space") then
-    attack.anim = attack.animation.right
+    attack.anim:gotoFrame(1)
+    attack.anim:update(dt)
     isAttack = true
   end
-
 
   if isMoving == false then
     player.anim:gotoFrame(2)
@@ -140,19 +141,30 @@ function love.update(dt)
 
   for i = 1, #enemies do
     enemies[i]:move(player.x, player.y)
+
+    -- if love.keyboard.isDown("space") and enemies[i].x - player.x < player.radius then
+    --   table.remove(enemies, i)
+    -- end
+
   end
 
 end
 
 function love.draw()
-  for i = 0, love.graphics.getWidth(), floor2:getWidth() do
-    for j = 0, love.graphics.getHeight(), floor2:getHeight() do
-      love.graphics.draw(floor2, i, j)
-    end
-  end
+  -- for i = 0, love.graphics.getWidth(), floor:getWidth() do
+  --   for j = 0, love.graphics.getHeight(), floor:getHeight() do
+  --     love.graphics.draw(floor, i, j)
+  --   end
+  -- end
+
+  -- MAP
+  -- Map:draw(tx, ty, sx, sy)
+  gameMap:draw(80, 8, 2, 2)
+
   player.anim:draw(player.spriteSheet, player.x, player.y, nil, 2, 2)
 
   attack.anim:draw(attack.spriteSheet, player.x, player.y, nil, 2, 2)
+
 
   for i = 1, #enemies do
     enemies[i]:draw()
