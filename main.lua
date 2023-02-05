@@ -5,6 +5,7 @@ function love.load()
   anim8 = require 'libraries/anim8'
   love.graphics.setDefaultFilter("nearest", "nearest")
 
+  -- MAP
   sti = require "libraries/sti"
   gameMap = sti("maps/medusaMap.lua")
 
@@ -15,8 +16,6 @@ function love.load()
   player.radius = 10
   player.speed = 1
   player.life = 10
-
-  -- floor = love.graphics.newImage("sprites/floor_6.png")
 
   player.spriteSheet = love.graphics.newImage("sprites/player-sheet.png")
   player.grid = anim8.newGrid(12, 18, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
@@ -29,6 +28,7 @@ function love.load()
 
   player.anim = player.animation.up
 
+  -- ATTACK
   attack = {}
   attack.spriteSheet = love.graphics.newImage("sprites/effects/slash-effect-right.png")
   -- attack.spriteSheet2 = love.graphics.newImage("sprites/effects/slash-effect-left.png")
@@ -52,6 +52,18 @@ function love.load()
   table.insert(enemies, 1, Enemy())
   table.insert(enemies, 1, Enemy())
   table.insert(enemies, 1, Enemy())
+
+  -- BAT
+  bat = {}
+  bat.x = 400
+  bat.y = 200
+  bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
+  bat.grid = anim8.newGrid(16, 16, bat.spriteSheet:getWidth(), bat.spriteSheet:getHeight())
+
+  bat.animation = {}
+  bat.animation.right = anim8.newAnimation(bat.grid('1-4', 1), 0.2)
+
+  bat.anim = bat.animation.right
 end
 
 function love.update(dt)
@@ -121,6 +133,7 @@ function love.update(dt)
 
   player.anim:update(dt)
   attack.anim:update(dt)
+  bat.anim:update(dt)
 
   --through window
 
@@ -141,12 +154,9 @@ function love.update(dt)
 
   for i = 1, #enemies do
     enemies[i]:move(player.x, player.y)
-
-    -- if love.keyboard.isDown("space") and enemies[i].x - player.x < player.radius then
-    --   table.remove(enemies, i)
-    -- end
-
   end
+
+  
 
 end
 
@@ -164,6 +174,8 @@ function love.draw()
   player.anim:draw(player.spriteSheet, player.x, player.y, nil, 2, 2)
 
   attack.anim:draw(attack.spriteSheet, player.x, player.y, nil, 2, 2)
+
+  bat.anim:draw(bat.spriteSheet, 100, 100, nil, 2, 2)
 
 
   for i = 1, #enemies do
