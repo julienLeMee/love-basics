@@ -5,6 +5,8 @@ function love.load()
 
   -- CAMERA
   camera = require 'libraries/camera'
+  -- cam = camera(400, 300)
+  cam = camera()
 
   -- COLLIDER
   wf = require 'libraries/windfield'
@@ -16,7 +18,8 @@ function love.load()
 
   -- MAP
   sti = require "libraries/sti"
-  gameMap = sti("maps/medusaMap.lua")
+  -- gameMap = sti("maps/medusaMap.lua")
+  gameMap = sti("maps/testMap.lua")
 
   -- PLAYER
   player = {}
@@ -25,7 +28,7 @@ function love.load()
   player.collider = world:newBSGRectangleCollider(400, 200, 22, 33, 20) -- (x, y, width, height, mass)
   player.collider:setFixedRotation(true)
   player.radius = 10
-  player.speed = 150
+  player.speed = 200
   player.life = 10
 
   player.spriteSheet = love.graphics.newImage("sprites/player-sheet.png")
@@ -68,8 +71,17 @@ function love.load()
   bat.anim = bat.animation.right
 
   -- WALL
-  local wall = world:newRectangleCollider(100, 200, 120, 300) -- (x, y, width, height)
-  wall:setType("static")
+  walls = {}
+  if gameMap.layers["Walls"] then
+    for i, obj in pairs(gameMap.layers["Walls"].objects) do
+      local wall = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height) -- (x, y, width, height, mass)
+      wall:setType("static")
+      table.insert(walls, wall)
+    end
+  end
+
+  -- local wall = world:newRectangleCollider(100, 200, 120, 300) -- (x, y, width, height)
+  -- wall:setType("static")
 end
 
 function love.update(dt)
@@ -122,28 +134,30 @@ function love.update(dt)
   end
 
   gameMap:update(dt)
+  world:update(dt)
   player.anim:update(dt)
   attack.anim:update(dt)
   bat.anim:update(dt)
-  world:update(dt)
   player.x = (player.collider:getX()) - 12
   player.y = (player.collider:getY()) - 18
 
+  cam:lookAt(player.x, player.y)
+
   --through window
 
-  --  make sure the ship can't go off screen on x axis
-  if player.x + player.radius < 0 then
-    player.x = love.graphics.getWidth() + player.radius
-  elseif player.x - player.radius > love.graphics.getWidth() then
-    player.x = -player.radius
-  end
+  -- --  make sure the ship can't go off screen on x axis
+  -- if player.x + player.radius < 0 then
+  --   player.x = love.graphics.getWidth() + player.radius
+  -- elseif player.x - player.radius > love.graphics.getWidth() then
+  --   player.x = -player.radius
+  -- end
 
-  -- make sure the ship can't go off screen on y axis
-  if player.y + player.radius < 0 then
-    player.y = love.graphics.getHeight() + player.radius
-  elseif player.y - player.radius > love.graphics.getHeight() then
-    player.y = -player.radius
-  end
+  -- -- make sure the ship can't go off screen on y axis
+  -- if player.y + player.radius < 0 then
+  --   player.y = love.graphics.getHeight() + player.radius
+  -- elseif player.y - player.radius > love.graphics.getHeight() then
+  --   player.y = -player.radius
+  -- end
 
 
   for i = 1, #enemies do
@@ -183,23 +197,25 @@ end
 
 function love.draw()
 
-  -- MAP
-  -- Map:draw(tx, ty, sx, sy)
-  gameMap:draw(80, 8, 2, 2)
+  cam:attach()
+    -- MAP
+    -- Map:draw(tx, ty, sx, sy)
+    gameMap:drawLayer(gameMap.layers["Ground"])
+    gameMap:drawLayer(gameMap.layers["Trees"])
 
-  -- PLAYER
-  -- Player:draw(spriteSheet, x, y, r, sx, sy)
-  player.anim:draw(player.spriteSheet, player.x, player.y, nil, 2, 2)
-  attack.anim:draw(attack.spriteSheet, player.x + 10, player.y, nil, 2, 2)
+    -- PLAYER
+    -- Player:draw(spriteSheet, x, y, r, sx, sy)
+    player.anim:draw(player.spriteSheet, player.x, player.y, nil, 2, 2)
+    attack.anim:draw(attack.spriteSheet, player.x + 10, player.y, nil, 2, 2)
 
-  -- BAT
-  bat.anim:draw(bat.spriteSheet, bat.x, bat.y, nil, 2, 2)
+    -- BAT
+    bat.anim:draw(bat.spriteSheet, bat.x, bat.y, nil, 2, 2)
 
-  -- COLLIDER
-  world:draw()
+    -- COLLIDER
+    -- world:draw()
 
-
-  -- for i = 1, #enemies do
-  --   enemies[i]:draw()
-  -- end
+    -- for i = 1, #enemies do
+    --   enemies[i]:draw()
+    -- end
+  cam:detach()
 end
