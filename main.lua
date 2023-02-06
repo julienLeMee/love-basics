@@ -2,6 +2,12 @@ local Enemy = require "objects/Enemy"
 local enemies = {}
 
 function love.load()
+
+  -- COLLIDER
+  wf = require 'libraries/windfield'
+  world = wf.newWorld(0, 0)
+
+  -- ANIM
   anim8 = require 'libraries/anim8'
   love.graphics.setDefaultFilter("nearest", "nearest")
 
@@ -11,6 +17,8 @@ function love.load()
 
   -- PLAYER
   player = {}
+  player.collider = world:newBSGRectangleCollider(400, 200, 22, 33, 20) -- correspond aux valeurs de la hitbox 400 pour x et 250 pour y et 40 pour la largeur et 80 pour la hauteur et 14 pour la densité
+  player.collider:setFixedRotation(true)
   player.x = 400
   player.y = 200
   player.radius = 10
@@ -31,19 +39,10 @@ function love.load()
   -- ATTACK
   attack = {}
   attack.spriteSheet = love.graphics.newImage("sprites/effects/slash-effect-right.png")
-  -- attack.spriteSheet2 = love.graphics.newImage("sprites/effects/slash-effect-left.png")
-  -- attack.spriteSheet3 = love.graphics.newImage("sprites/effects/slash-effect-up.png")
-  -- attack.spriteSheet4 = love.graphics.newImage("sprites/effects/slash-effect-down.png")
   attack.grid = anim8.newGrid(16, 16, attack.spriteSheet:getWidth(), attack.spriteSheet:getHeight())
-  -- attack.grid2 = anim8.newGrid(16, 16, attack.spriteSheet2:getWidth(), attack.spriteSheet2:getHeight())
-  -- attack.grid3 = anim8.newGrid(16, 16, attack.spriteSheet3:getWidth(), attack.spriteSheet3:getHeight())
-  -- attack.grid4 = anim8.newGrid(16, 16, attack.spriteSheet4:getWidth(), attack.spriteSheet4:getHeight())
 
   attack.animation = {}
   attack.animation.right = anim8.newAnimation(attack.grid('1-3', 1), 0.2)
-  -- attack.animation.left = anim8.newAnimation(attack.grid2('3-1', 1), 0.2)
-  -- attack.animation.up = anim8.newAnimation(attack.grid3('1-3', 1), 0.2)
-  -- attack.animation.down = anim8.newAnimation(attack.grid4('1-3', 1), 0.2)
 
   attack.anim = attack.animation.right
 
@@ -68,53 +67,51 @@ end
 
 function love.update(dt)
 
-  gameMap:update(dt)
-
   local isMoving = false
   local isAttack = false
 
   if love.keyboard.isDown("right") then
-      player.x = player.x + player.speed
-      player.anim = player.animation.right
-      isMoving = true
+    player.x = player.x + player.speed
+    player.anim = player.animation.right
+    isMoving = true
 
-      -- if love.keyboard.isDown("space") then
-      --   attack.anim = attack.animation.right
-      --   isAttack = true
-      -- end
+    -- if love.keyboard.isDown("space") then
+    --   attack.anim = attack.animation.right
+    --   isAttack = true
+    -- end
   end
 
   if love.keyboard.isDown("left") then
-      player.x = player.x - player.speed
-      player.anim = player.animation.left
-      isMoving = true
+    player.x = player.x - player.speed
+    player.anim = player.animation.left
+    isMoving = true
 
-      -- if love.keyboard.isDown("space") then
-      --   attack.anim = attack.animation.left
-      --   isAttack = true
-      -- end
+    -- if love.keyboard.isDown("space") then
+    --   attack.anim = attack.animation.left
+    --   isAttack = true
+    -- end
   end
 
   if love.keyboard.isDown("down") then
-      player.y = player.y + player.speed
-      player.anim = player.animation.down
-      isMoving = true
+    player.y = player.y + player.speed
+    player.anim = player.animation.down
+    isMoving = true
 
-      -- if love.keyboard.isDown("space") then
-      --   attack.anim = attack.animation.down
-      --   isAttack = true
-      -- end
+    -- if love.keyboard.isDown("space") then
+    --   attack.anim = attack.animation.down
+    --   isAttack = true
+    -- end
   end
 
   if love.keyboard.isDown("up") then
-      player.y = player.y - player.speed
-      player.anim = player.animation.up
-      isMoving = true
+    player.y = player.y - player.speed
+    player.anim = player.animation.up
+    isMoving = true
 
-      -- if love.keyboard.isDown("space") then
-      --   attack.anim = attack.animation.up
-      --   isAttack = true
-      -- end
+    -- if love.keyboard.isDown("space") then
+    --   attack.anim = attack.animation.up
+    --   isAttack = true
+    -- end
   end
 
   if love.keyboard.isDown("space") then
@@ -131,9 +128,12 @@ function love.update(dt)
     attack.anim:gotoFrame(3)
   end
 
+  gameMap:update(dt)
   player.anim:update(dt)
   attack.anim:update(dt)
   bat.anim:update(dt)
+  world:update(dt)
+  player.collider:setPosition(player.x + 12, player.y + 18)
 
   --through window
 
@@ -196,10 +196,13 @@ function love.draw()
   -- PLAYER
   -- Player:draw(spriteSheet, x, y, r, sx, sy)
   player.anim:draw(player.spriteSheet, player.x, player.y, nil, 2, 2)
-
   attack.anim:draw(attack.spriteSheet, player.x + 10, player.y, nil, 2, 2)
 
+  -- BAT
   bat.anim:draw(bat.spriteSheet, bat.x, bat.y, nil, 2, 2)
+
+  -- COLLIDER
+  world:draw()
 
 
   -- for i = 1, #enemies do
