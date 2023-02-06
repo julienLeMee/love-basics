@@ -3,6 +3,9 @@ local enemies = {}
 
 function love.load()
 
+  -- CAMERA
+  camera = require 'libraries/camera'
+
   -- COLLIDER
   wf = require 'libraries/windfield'
   world = wf.newWorld(0, 0)
@@ -17,12 +20,12 @@ function love.load()
 
   -- PLAYER
   player = {}
-  player.collider = world:newBSGRectangleCollider(400, 200, 22, 33, 20) -- correspond aux valeurs de la hitbox 400 pour x et 250 pour y et 40 pour la largeur et 80 pour la hauteur et 14 pour la densité
-  player.collider:setFixedRotation(true)
   player.x = 400
   player.y = 200
+  player.collider = world:newBSGRectangleCollider(400, 200, 22, 33, 20) -- (x, y, width, height, mass)
+  player.collider:setFixedRotation(true)
   player.radius = 10
-  player.speed = 1
+  player.speed = 150
   player.life = 10
 
   player.spriteSheet = love.graphics.newImage("sprites/player-sheet.png")
@@ -63,6 +66,10 @@ function love.load()
   bat.animation.right = anim8.newAnimation(bat.grid('1-4', 1), 0.2)
 
   bat.anim = bat.animation.right
+
+  -- WALL
+  local wall = world:newRectangleCollider(100, 200, 120, 300) -- (x, y, width, height)
+  wall:setType("static")
 end
 
 function love.update(dt)
@@ -70,48 +77,32 @@ function love.update(dt)
   local isMoving = false
   local isAttack = false
 
+  -- velocity
+  local velocityX = 0
+  local velocityY = 0
+
   if love.keyboard.isDown("right") then
-    player.x = player.x + player.speed
+    velocityX = player.speed
     player.anim = player.animation.right
     isMoving = true
-
-    -- if love.keyboard.isDown("space") then
-    --   attack.anim = attack.animation.right
-    --   isAttack = true
-    -- end
   end
 
   if love.keyboard.isDown("left") then
-    player.x = player.x - player.speed
+    velocityX = -player.speed
     player.anim = player.animation.left
     isMoving = true
-
-    -- if love.keyboard.isDown("space") then
-    --   attack.anim = attack.animation.left
-    --   isAttack = true
-    -- end
   end
 
   if love.keyboard.isDown("down") then
-    player.y = player.y + player.speed
+    velocityY = player.speed
     player.anim = player.animation.down
     isMoving = true
-
-    -- if love.keyboard.isDown("space") then
-    --   attack.anim = attack.animation.down
-    --   isAttack = true
-    -- end
   end
 
   if love.keyboard.isDown("up") then
-    player.y = player.y - player.speed
+    velocityY = -player.speed
     player.anim = player.animation.up
     isMoving = true
-
-    -- if love.keyboard.isDown("space") then
-    --   attack.anim = attack.animation.up
-    --   isAttack = true
-    -- end
   end
 
   if love.keyboard.isDown("space") then
@@ -119,6 +110,8 @@ function love.update(dt)
     attack.anim:update(dt)
     isAttack = true
   end
+
+  player.collider:setLinearVelocity(velocityX, velocityY)
 
   if isMoving == false then
     player.anim:gotoFrame(2)
@@ -133,7 +126,8 @@ function love.update(dt)
   attack.anim:update(dt)
   bat.anim:update(dt)
   world:update(dt)
-  player.collider:setPosition(player.x + 12, player.y + 18)
+  player.x = (player.collider:getX()) - 12
+  player.y = (player.collider:getY()) - 18
 
   --through window
 
