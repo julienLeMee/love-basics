@@ -55,8 +55,8 @@ function love.load()
 
   -- BAT
   bat = {}
-  bat.x = 400
-  bat.y = 200
+  bat.x = 200
+  bat.y = 100
   bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
   bat.grid = anim8.newGrid(16, 16, bat.spriteSheet:getWidth(), bat.spriteSheet:getHeight())
 
@@ -156,29 +156,53 @@ function love.update(dt)
     enemies[i]:move(player.x, player.y)
   end
 
-  
+  -- bat move
+  if bat.x < player.x then
+    bat.x = bat.x + 0.3
+  end
+
+  if bat.y < player.y then
+    bat.y = bat.y + 0.3
+  end
+
+  if bat.x > player.x then
+    bat.x = bat.x - 0.3
+  end
+
+  if bat.y > player.y then
+    bat.y = bat.y - 0.3
+  end
+
+  -- knock back
+  if bat.x < player.x + 10 and bat.x > player.x - 10 and bat.y < player.y + 10 and bat.y > player.y - 10 then
+    if love.keyboard.isDown("space") then
+      bat.x = player.x - 25
+      bat.y = player.y - 25
+      bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet2.png")
+    end
+  else
+    bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
+  end
+
 
 end
 
 function love.draw()
-  -- for i = 0, love.graphics.getWidth(), floor:getWidth() do
-  --   for j = 0, love.graphics.getHeight(), floor:getHeight() do
-  --     love.graphics.draw(floor, i, j)
-  --   end
-  -- end
 
   -- MAP
   -- Map:draw(tx, ty, sx, sy)
   gameMap:draw(80, 8, 2, 2)
 
+  -- PLAYER
+  -- Player:draw(spriteSheet, x, y, r, sx, sy)
   player.anim:draw(player.spriteSheet, player.x, player.y, nil, 2, 2)
 
-  attack.anim:draw(attack.spriteSheet, player.x, player.y, nil, 2, 2)
+  attack.anim:draw(attack.spriteSheet, player.x + 10, player.y, nil, 2, 2)
 
-  bat.anim:draw(bat.spriteSheet, 100, 100, nil, 2, 2)
+  bat.anim:draw(bat.spriteSheet, bat.x, bat.y, nil, 2, 2)
 
 
-  for i = 1, #enemies do
-    enemies[i]:draw()
-  end
+  -- for i = 1, #enemies do
+  --   enemies[i]:draw()
+  -- end
 end
