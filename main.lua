@@ -21,6 +21,14 @@ function love.load()
   -- gameMap = sti("maps/medusaMap.lua")
   gameMap = sti("maps/testMap.lua")
 
+  -- SOUNDS
+  sounds = {}
+  sounds.blip = love.audio.newSource("sounds/blip.wav", "static")
+  sounds.music = love.audio.newSource("sounds/music.mp3", "stream")
+  sounds.music:setLooping(true)
+
+  sounds.music:play()
+
   -- PLAYER
   player = {}
   player.x = 400
@@ -89,6 +97,8 @@ function love.update(dt)
   local isMoving = false
   local isAttack = false
 
+  -- PLAYER MOVE
+
   -- velocity
   local velocityX = 0
   local velocityY = 0
@@ -117,21 +127,26 @@ function love.update(dt)
     isMoving = true
   end
 
-  if love.keyboard.isDown("space") then
-    attack.anim:gotoFrame(1)
-    attack.anim:update(dt)
-    isAttack = true
-  end
-
   player.collider:setLinearVelocity(velocityX, velocityY)
 
   if isMoving == false then
     player.anim:gotoFrame(2)
   end
 
+  -- PLAYER ATTACK
+
+  if love.keyboard.isDown("space") then
+    sounds.blip:play()
+    attack.anim:gotoFrame(1)
+    attack.anim:update(dt)
+    isAttack = true
+  end
+
   if isAttack == false then
     attack.anim:gotoFrame(3)
   end
+
+  -- UPDATE
 
   gameMap:update(dt)
   world:update(dt)
