@@ -1,5 +1,6 @@
 local Enemy = require "objects/Enemy"
 local enemies = {}
+local bats = {}
 
 function love.load()
 
@@ -67,16 +68,34 @@ function love.load()
   table.insert(enemies, 1, Enemy())
 
   -- BAT
-  bat = {}
-  bat.x = 200
-  bat.y = 100
-  bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
-  bat.grid = anim8.newGrid(16, 16, bat.spriteSheet:getWidth(), bat.spriteSheet:getHeight())
+  for i = 1, 10 do
+    local bat = {}
+    bat.x = love.math.random(0, 800)
+    bat.y = love.math.random(0, 800)
+    bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
+    bat.grid = anim8.newGrid(16, 16, bat.spriteSheet:getWidth(), bat.spriteSheet:getHeight())
 
-  bat.animation = {}
-  bat.animation.right = anim8.newAnimation(bat.grid('1-4', 1), 0.2)
+    bat.animation = {}
+    bat.animation.right = anim8.newAnimation(bat.grid('1-4', 1), 0.2)
 
-  bat.anim = bat.animation.right
+    bat.anim = bat.animation.right
+
+    table.insert(bats, i, bat)
+  end
+  -- bat = {}
+  -- batRandomPosX = love.math.random(400, 500)
+  -- batRandomPosY = love.math.random(200, 400)
+  -- bat.x = batRandomPosX
+  -- bat.y = batRandomPosY
+  -- bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
+  -- bat.grid = anim8.newGrid(16, 16, bat.spriteSheet:getWidth(), bat.spriteSheet:getHeight())
+
+  -- bat.animation = {}
+  -- bat.animation.right = anim8.newAnimation(bat.grid('1-4', 1), 0.2)
+
+  -- bat.anim = bat.animation.right
+
+  -- table.insert(bats, 1, bat)
 
   -- WALL
   walls = {}
@@ -152,7 +171,7 @@ function love.update(dt)
   world:update(dt)
   player.anim:update(dt)
   attack.anim:update(dt)
-  bat.anim:update(dt)
+  -- bat.anim:update(dt)
   player.x = (player.collider:getX()) - 12
   player.y = (player.collider:getY()) - 18
 
@@ -180,23 +199,27 @@ function love.update(dt)
   end
 
   -- bat move
-  if bat.x < player.x then
-    bat.x = bat.x + 0.3
-  end
+  for i = 1, #bats do
+    if bats[i].x < player.x then
+      bats[i].x = bats[i].x + 0.3
+    end
 
-  if bat.y < player.y then
-    bat.y = bat.y + 0.3
-  end
+    if bats[i].y < player.y then
+      bats[i].y = bats[i].y + 0.3
+    end
 
-  if bat.x > player.x then
-    bat.x = bat.x - 0.3
-  end
+    if bats[i].x > player.x then
+      bats[i].x = bats[i].x - 0.3
+    end
 
-  if bat.y > player.y then
-    bat.y = bat.y - 0.3
+    if bats[i].y > player.y then
+      bats[i].y = bats[i].y - 0.3
+    end
   end
 
   -- knock back
+  for i = 1, #bats do
+    local bat = bats[i]
   if bat.x < player.x + 10 and bat.x > player.x - 10 and bat.y < player.y + 10 and bat.y > player.y - 10 then
     if love.keyboard.isDown("space") then
       bat.x = player.x - 25
@@ -206,6 +229,7 @@ function love.update(dt)
   else
     bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
   end
+end
 
 
 end
@@ -224,7 +248,10 @@ function love.draw()
     attack.anim:draw(attack.spriteSheet, player.x + 10, player.y, nil, 2, 2)
 
     -- BAT
-    bat.anim:draw(bat.spriteSheet, bat.x, bat.y, nil, 2, 2)
+    -- bat.anim:draw(bat.spriteSheet, bat.x, bat.y, nil, 2, 2)
+    for i = 1, #bats do
+      bats[i].anim:draw(bats[i].spriteSheet, bats[i].x, bats[i].y, nil, 2, 2)
+    end
 
     -- COLLIDER
     -- world:draw()
