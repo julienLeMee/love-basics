@@ -4,6 +4,8 @@ local bats = {}
 
 function love.load()
 
+  text = " f = fullscreen, q = quit, space = attack, arrow keys = move "
+
   -- CAMERA
   camera = require 'libraries/camera'
   -- cam = camera(400, 300)
@@ -82,20 +84,6 @@ function love.load()
 
     table.insert(bats, i, bat)
   end
-  -- bat = {}
-  -- batRandomPosX = love.math.random(400, 500)
-  -- batRandomPosY = love.math.random(200, 400)
-  -- bat.x = batRandomPosX
-  -- bat.y = batRandomPosY
-  -- bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
-  -- bat.grid = anim8.newGrid(16, 16, bat.spriteSheet:getWidth(), bat.spriteSheet:getHeight())
-
-  -- bat.animation = {}
-  -- bat.animation.right = anim8.newAnimation(bat.grid('1-4', 1), 0.2)
-
-  -- bat.anim = bat.animation.right
-
-  -- table.insert(bats, 1, bat)
 
   -- WALL
   walls = {}
@@ -112,6 +100,12 @@ function love.load()
 end
 
 function love.update(dt)
+
+  if love.keyboard.isDown("f") then
+    love.window.setFullscreen(true, "desktop")
+  elseif love.keyboard.isDown("q") then
+    love.window.setFullscreen(false, "desktop")
+  end
 
   local isMoving = false
   local isAttack = false
@@ -260,4 +254,6 @@ function love.draw()
     --   enemies[i]:draw()
     -- end
   cam:detach()
+
+  love.graphics.printf(text, 0, 0, love.graphics.getWidth())
 end
