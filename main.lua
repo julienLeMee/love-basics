@@ -1,4 +1,3 @@
----@diagnostic disable: undefined-field
 -- local Enemy = require "objects/Enemy"
 -- local enemies = {}
 local bats = {}
