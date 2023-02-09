@@ -1,9 +1,20 @@
+---@diagnostic disable: undefined-field
 -- local Enemy = require "objects/Enemy"
 -- local enemies = {}
 local bats = {}
 
 function love.load()
 
+  -- PARTICLE
+  -- local img = love.graphics.newImage("sprites/particles.png")
+  -- pSystem = love.graphics.newParticleSystem(img, 32)
+  -- pSystem:setParticleLifetime(1,5)
+  -- pSystem:setLinearAcceleration(-20, -20, 20, 20)
+  -- pSystem:setSpeed(20)
+  -- -- pSystem:setRotation(10,20)
+  -- pSystem:setSpin(20, 50)
+
+  -- COMMAND INFOS
   text = " f = fullscreen, q = quit, space = attack, arrow keys = move "
 
   -- CAMERA
@@ -162,6 +173,12 @@ function love.update(dt)
     attack.anim:gotoFrame(3)
   end
 
+ -- PARTICLE EFFECT
+  -- if love.keyboard.isDown("s") then
+  --   pSystem:emit(32)
+  -- end
+  -- pSystem:update(dt)
+
   -- UPDATE
 
   gameMap:update(dt)
@@ -178,9 +195,6 @@ function love.update(dt)
   for i = 1, #bats do
     if bats[i].x < player.x then
       bats[i].x = bats[i].x + 0.3
-      bat = bats[i]
-    bat.x = (bat.collider:getX()) - 16
-    bat.y = (bat.collider:getY()) - 16
     end
 
     if bats[i].y < player.y then
@@ -235,12 +249,13 @@ function love.update(dt)
       bat.x = player.x - 25
       bat.y = player.y - 25
       bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet2.png")
+      end
+    else
+      bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
     end
-  else
-    bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
   end
-end
 
+  -- love.mousePressed()
 
 end
 
@@ -264,13 +279,24 @@ function love.draw()
     end
 
     -- COLLIDER
-    world:draw()
+    -- world:draw()
 
     -- for i = 1, #enemies do
     --   enemies[i]:draw()
     -- end
     cam:detach()
 
+    -- COMMAND INFOS
     love.graphics.printf(text, 0, 0, love.graphics.getWidth(), "center")
-    love.graphics.print(bats[1].x, bats[1].y )
+
+    -- PARTICLES
+    -- love.graphics.draw(pSystem, love.mouse.getX(), love.mouse.getY())
 end
+
+-- function love.mousePressed()
+--   --this checks if you are left clicking, and if you are it runs the code under it
+--   if love.mouse.isDown(1) then
+--     --this says if the user is left clicking then emit 32 particles and since the particles are drawn where the mouse is they come out of the mouse
+--     pSystem:emit(32)
+--   end
+-- end
