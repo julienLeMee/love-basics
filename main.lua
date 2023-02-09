@@ -1,5 +1,5 @@
-local Enemy = require "objects/Enemy"
-local enemies = {}
+-- local Enemy = require "objects/Enemy"
+-- local enemies = {}
 local bats = {}
 
 function love.load()
@@ -64,14 +64,15 @@ function love.load()
   attack.anim = attack.animation.right
 
   --ENEMY
-  table.insert(enemies, 1, Enemy())
-  table.insert(enemies, 1, Enemy())
-  table.insert(enemies, 1, Enemy())
-  table.insert(enemies, 1, Enemy())
+  -- table.insert(enemies, 1, Enemy())
+  -- table.insert(enemies, 1, Enemy())
+  -- table.insert(enemies, 1, Enemy())
+  -- table.insert(enemies, 1, Enemy())
 
   -- BAT
+
   for i = 1, 10 do
-    local bat = {}
+    bat = {}
     bat.x = love.math.random(0, 800)
     bat.y = love.math.random(0, 800)
     bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
@@ -165,7 +166,9 @@ function love.update(dt)
   world:update(dt)
   player.anim:update(dt)
   attack.anim:update(dt)
-  -- bat.anim:update(dt)
+  for i = 1, #bats do
+    bats[i].anim:update(dt)
+  end
   player.x = (player.collider:getX()) - 12
   player.y = (player.collider:getY()) - 18
 
@@ -188,9 +191,9 @@ function love.update(dt)
   -- end
 
 
-  for i = 1, #enemies do
-    enemies[i]:move(player.x, player.y)
-  end
+  -- for i = 1, #enemies do
+  --   enemies[i]:move(player.x, player.y)
+  -- end
 
   -- bat move
   for i = 1, #bats do
