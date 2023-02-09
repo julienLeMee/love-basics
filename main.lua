@@ -75,6 +75,8 @@ function love.load()
     bat = {}
     bat.x = love.math.random(0, 800)
     bat.y = love.math.random(0, 800)
+    -- bat.collider = world:newBSGRectangleCollider(bat.x, bat.y, 22, 33, 20) -- (x, y, width, height, mass)
+    -- bat.collider:setFixedRotation(true)
     bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
     bat.grid = anim8.newGrid(16, 16, bat.spriteSheet:getWidth(), bat.spriteSheet:getHeight())
 
@@ -172,6 +174,35 @@ function love.update(dt)
   player.x = (player.collider:getX()) - 12
   player.y = (player.collider:getY()) - 18
 
+  -- bat move
+  for i = 1, #bats do
+    if bats[i].x < player.x then
+      bats[i].x = bats[i].x + 0.3
+      bat = bats[i]
+    bat.x = (bat.collider:getX()) - 16
+    bat.y = (bat.collider:getY()) - 16
+    end
+
+    if bats[i].y < player.y then
+      bats[i].y = bats[i].y + 0.3
+    end
+
+    if bats[i].x > player.x then
+      bats[i].x = bats[i].x - 0.3
+    end
+
+    if bats[i].y > player.y then
+      bats[i].y = bats[i].y - 0.3
+    end
+  end
+
+  -- BATS COLLIDER
+  -- for i = 1, #bats do
+  --   bat = bats[i]
+  --   bat.x = (bat.collider:getX()) - 16
+  --   bat.y = (bat.collider:getY()) - 16
+  -- end
+
   cam:lookAt(player.x, player.y)
 
   --through window
@@ -195,30 +226,12 @@ function love.update(dt)
   --   enemies[i]:move(player.x, player.y)
   -- end
 
-  -- bat move
-  for i = 1, #bats do
-    if bats[i].x < player.x then
-      bats[i].x = bats[i].x + 0.3
-    end
-
-    if bats[i].y < player.y then
-      bats[i].y = bats[i].y + 0.3
-    end
-
-    if bats[i].x > player.x then
-      bats[i].x = bats[i].x - 0.3
-    end
-
-    if bats[i].y > player.y then
-      bats[i].y = bats[i].y - 0.3
-    end
-  end
 
   -- knock back
   for i = 1, #bats do
     local bat = bats[i]
-  if bat.x < player.x + 10 and bat.x > player.x - 10 and bat.y < player.y + 10 and bat.y > player.y - 10 then
-    if love.keyboard.isDown("space") then
+    if bat.x < player.x + 10 and bat.x > player.x - 10 and bat.y < player.y + 10 and bat.y > player.y - 10 then
+      if love.keyboard.isDown("space") then
       bat.x = player.x - 25
       bat.y = player.y - 25
       bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet2.png")
@@ -251,12 +264,13 @@ function love.draw()
     end
 
     -- COLLIDER
-    -- world:draw()
+    world:draw()
 
     -- for i = 1, #enemies do
     --   enemies[i]:draw()
     -- end
-  cam:detach()
+    cam:detach()
 
-  love.graphics.printf(text, 0, 0, love.graphics.getWidth())
+    love.graphics.printf(text, 0, 0, love.graphics.getWidth(), "center")
+    love.graphics.print(bats[1].x, bats[1].y )
 end
