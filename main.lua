@@ -4,15 +4,6 @@ local bats = {}
 
 function love.load()
 
-  -- PARTICLE
-  -- local img = love.graphics.newImage("sprites/particles.png")
-  -- pSystem = love.graphics.newParticleSystem(img, 32)
-  -- pSystem:setParticleLifetime(1,5)
-  -- pSystem:setLinearAcceleration(-20, -20, 20, 20)
-  -- pSystem:setSpeed(20)
-  -- -- pSystem:setRotation(10,20)
-  -- pSystem:setSpin(20, 50)
-
   -- COMMAND INFOS
   text = " f = fullscreen, q = quit, space = attack, arrow keys = move "
 
@@ -51,6 +42,7 @@ function love.load()
   player.radius = 10
   player.speed = 200
   player.life = 10
+  player.dir = "up"
 
   player.spriteSheet = love.graphics.newImage("sprites/player-sheet.png")
   player.grid = anim8.newGrid(12, 18, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
@@ -65,26 +57,23 @@ function love.load()
 
   -- ATTACK
   attack = {}
-  attack.spriteSheet = love.graphics.newImage("sprites/effects/slash-effect-right.png")
+  attack.spriteSheet = love.graphics.newImage("sprites/slash2.png")
   attack.grid = anim8.newGrid(16, 16, attack.spriteSheet:getWidth(), attack.spriteSheet:getHeight())
 
   attack.animation = {}
-  attack.animation.right = anim8.newAnimation(attack.grid('1-3', 1), 0.2)
+  attack.animation.right = anim8.newAnimation(attack.grid('1-4', 1), 0.2)
 
   attack.anim = attack.animation.right
 
-  --ENEMY
-  -- table.insert(enemies, 1, Enemy())
-  -- table.insert(enemies, 1, Enemy())
-  -- table.insert(enemies, 1, Enemy())
-  -- table.insert(enemies, 1, Enemy())
 
-  -- BAT
+  -- BAT ENEMY
 
   for i = 1, 10 do
     bat = {}
     bat.x = love.math.random(0, 800)
     bat.y = love.math.random(0, 800)
+    bat.life = 10
+    bat.speed = 100
     -- bat.collider = world:newBSGRectangleCollider(bat.x, bat.y, 22, 33, 20) -- (x, y, width, height, mass)
     -- bat.collider:setFixedRotation(true)
     bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
@@ -108,8 +97,6 @@ function love.load()
     end
   end
 
-  -- local wall = world:newRectangleCollider(100, 200, 120, 300) -- (x, y, width, height)
-  -- wall:setType("static")
 end
 
 function love.update(dt)
@@ -133,24 +120,28 @@ function love.update(dt)
     velocityX = player.speed
     player.anim = player.animation.right
     isMoving = true
+    player.dir = "right"
   end
 
   if love.keyboard.isDown("left") then
     velocityX = -player.speed
     player.anim = player.animation.left
     isMoving = true
+    player.dir = "left"
   end
 
   if love.keyboard.isDown("down") then
     velocityY = player.speed
     player.anim = player.animation.down
     isMoving = true
+    player.dir = "down"
   end
 
   if love.keyboard.isDown("up") then
     velocityY = -player.speed
     player.anim = player.animation.up
     isMoving = true
+    player.dir = "up"
   end
 
   player.collider:setLinearVelocity(velocityX, velocityY)
@@ -162,21 +153,13 @@ function love.update(dt)
   -- PLAYER ATTACK
 
   if love.keyboard.isDown("space") then
-    sounds.blip:play()
-    attack.anim:gotoFrame(1)
     attack.anim:update(dt)
     isAttack = true
   end
 
   if isAttack == false then
-    attack.anim:gotoFrame(3)
+    attack.anim:gotoFrame(4)
   end
-
- -- PARTICLE EFFECT
-  -- if love.keyboard.isDown("s") then
-  --   pSystem:emit(32)
-  -- end
-  -- pSystem:update(dt)
 
   -- UPDATE
 
@@ -190,22 +173,26 @@ function love.update(dt)
   player.x = (player.collider:getX()) - 12
   player.y = (player.collider:getY()) - 18
 
-  -- bat move
-  for i = 1, #bats do
-    if bats[i].x < player.x then
-      bats[i].x = bats[i].x + 0.3
-    end
+   -- bat move
+  for i = #bats, 1, -1 do
+    if bats[i].life <= 0 then
+      table.remove(bats, i)
+    else
+      if bats[i].x < player.x then
+        bats[i].x = bats[i].x + 0.3
+      end
 
-    if bats[i].y < player.y then
-      bats[i].y = bats[i].y + 0.3
-    end
+      if bats[i].y < player.y then
+        bats[i].y = bats[i].y + 0.3
+      end
 
-    if bats[i].x > player.x then
-      bats[i].x = bats[i].x - 0.3
-    end
+      if bats[i].x > player.x then
+        bats[i].x = bats[i].x - 0.3
+      end
 
-    if bats[i].y > player.y then
-      bats[i].y = bats[i].y - 0.3
+      if bats[i].y > player.y then
+        bats[i].y = bats[i].y - 0.3
+      end
     end
   end
 
@@ -214,47 +201,44 @@ function love.update(dt)
   --   bat = bats[i]
   --   bat.x = (bat.collider:getX()) - 16
   --   bat.y = (bat.collider:getY()) - 16
+
+    -- if bat.collider:enter("Player") then
+    --   sounds.hit:play()
+    --   player.life = player.life - 1
+    --   bat.collider:destroy()
+    --   table.remove(bats, i)
+    -- end
   -- end
 
   cam:lookAt(player.x, player.y)
 
-  --through window
-
-  -- --  make sure the ship can't go off screen on x axis
-  -- if player.x + player.radius < 0 then
-  --   player.x = love.graphics.getWidth() + player.radius
-  -- elseif player.x - player.radius > love.graphics.getWidth() then
-  --   player.x = -player.radius
-  -- end
-
-  -- -- make sure the ship can't go off screen on y axis
-  -- if player.y + player.radius < 0 then
-  --   player.y = love.graphics.getHeight() + player.radius
-  -- elseif player.y - player.radius > love.graphics.getHeight() then
-  --   player.y = -player.radius
-  -- end
-
-
-  -- for i = 1, #enemies do
-  --   enemies[i]:move(player.x, player.y)
-  -- end
-
-
   -- knock back
   for i = 1, #bats do
-    local bat = bats[i]
-    if bat.x < player.x + 10 and bat.x > player.x - 10 and bat.y < player.y + 10 and bat.y > player.y - 10 then
+    if bats[i].x < player.x + 35 and bats[i].x > player.x - 35 and bats[i].y < player.y + 35 and bats[i].y > player.y - 35 then
       if love.keyboard.isDown("space") then
-      bat.x = player.x - 25
-      bat.y = player.y - 25
-      bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet2.png")
+        if player.dir == "left" then
+          sounds.blip:play()
+          bats[i].x = bats[i].x - 100
+          bats[i].life = bats[i].life - 1
+        elseif player.dir == "down" then
+          sounds.blip:play()
+          bats[i].y = player.y + 100
+          bats[i].life = bats[i].life - 1
+        elseif player.dir == "up" then
+          sounds.blip:play()
+          bats[i].y = player.y - 100
+          bats[i].life = bats[i].life - 1
+        elseif player.dir == "right" then
+          sounds.blip:play()
+          bats[i].x = bats[i].x + 100
+          bats[i].life = bats[i].life - 1
+        end
+        attack.anim:draw(attack.spriteSheet, player.x + 30, player.y, getRadianRotation(player.dir), 2, 2)
       end
     else
-      bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
+      bats[i].spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
     end
   end
-
-  -- love.mousePressed()
 
 end
 
@@ -269,7 +253,18 @@ function love.draw()
     -- PLAYER
     -- Player:draw(spriteSheet, x, y, r, sx, sy)
     player.anim:draw(player.spriteSheet, player.x, player.y, nil, 2, 2)
-    attack.anim:draw(attack.spriteSheet, player.x + 10, player.y, nil, 2, 2)
+
+    -- ATTACK
+    -- attack.anim:draw(attack.spriteSheet, player.x, player.y, rotation,scaling?, scaling?)
+    if player.dir == "left" then
+      attack.anim:draw(attack.spriteSheet, player.x - 5, player.y + 30, getRadianRotation(player.dir), 2, 2)
+    elseif player.dir == "down" then
+        attack.anim:draw(attack.spriteSheet, player.x + 30, player.y + 30, getRadianRotation(player.dir), 2, 2)
+    elseif player.dir == "up" then
+        attack.anim:draw(attack.spriteSheet, player.x - 5, player.y, getRadianRotation(player.dir), 2, 2)
+    elseif player.dir == "right" then
+        attack.anim:draw(attack.spriteSheet, player.x + 30, player.y, getRadianRotation(player.dir), 2, 2)
+    end
 
     -- BAT
     -- bat.anim:draw(bat.spriteSheet, bat.x, bat.y, nil, 2, 2)
@@ -277,25 +272,38 @@ function love.draw()
       bats[i].anim:draw(bats[i].spriteSheet, bats[i].x, bats[i].y, nil, 2, 2)
     end
 
+    for i = 1, #bats do
+      love.graphics.rectangle("fill", bats[i].x, bats[i].y - 20, bats[i].life, 2)
+      -- love.graphics.print(bats[i].life, bats[i].x, bats[i].y - 20)
+    end
+
     -- COLLIDER
     -- world:draw()
 
-    -- for i = 1, #enemies do
-    --   enemies[i]:draw()
-    -- end
     cam:detach()
 
     -- COMMAND INFOS
-    love.graphics.printf(text, 0, 0, love.graphics.getWidth(), "center")
+    love.graphics.setColor(0, 0, 0, 0.5)
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), 35) -- x, y, width, height
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.printf(text, 0, 10, love.graphics.getWidth(), "center")
+    love.graphics.print("Life: " .. player.life, 10, 10)
+    love.graphics.print("Enemies: " .. #bats, love.graphics.getWidth() - 100, 10)
 
-    -- PARTICLES
-    -- love.graphics.draw(pSystem, love.mouse.getX(), love.mouse.getY())
 end
 
--- function love.mousePressed()
---   --this checks if you are left clicking, and if you are it runs the code under it
---   if love.mouse.isDown(1) then
---     --this says if the user is left clicking then emit 32 particles and since the particles are drawn where the mouse is they come out of the mouse
---     pSystem:emit(32)
---   end
--- end
+function getRadianRotation(direction)
+
+  if direction == "right" then
+      return 0
+  elseif direction == "left" then
+      return math.pi
+  elseif direction == "up" then
+      return (math.pi/2) * 3
+  elseif direction == "down" then
+      return math.pi/2
+  else
+      return 0
+  end
+
+end
