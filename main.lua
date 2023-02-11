@@ -10,7 +10,7 @@ function love.load()
   -- CAMERA
   camera = require 'libraries/camera'
   -- cam = camera(400, 300)
-  cam = camera()
+  cam = camera(400, 300, 3, 0) -- (x, y, zoom, rotation)
 
   -- COLLIDER
   wf = require 'libraries/windfield'
@@ -23,7 +23,7 @@ function love.load()
   -- MAP
   sti = require "libraries/sti"
   -- gameMap = sti("maps/medusaMap.lua")
-  gameMap = sti("maps/testMap.lua")
+  gameMap = sti("maps/newMapMedusa.lua")
 
   -- SOUNDS
   sounds = {}
@@ -40,7 +40,7 @@ function love.load()
   player.collider = world:newBSGRectangleCollider(400, 200, 22, 33, 20) -- (x, y, width, height, mass)
   player.collider:setFixedRotation(true)
   player.radius = 10
-  player.speed = 200
+  player.speed = 70
   player.life = 10
   player.dir = "up"
 
@@ -70,10 +70,10 @@ function love.load()
 
   for i = 1, 10 do
     bat = {}
-    bat.x = love.math.random(0, 800)
-    bat.y = love.math.random(0, 800)
+    bat.x = love.math.random(0, 1200)
+    bat.y = love.math.random(0, 1200)
     bat.life = 10
-    bat.speed = 100
+    bat.speed = 30
     bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
     bat.grid = anim8.newGrid(16, 16, bat.spriteSheet:getWidth(), bat.spriteSheet:getHeight())
 
@@ -231,13 +231,14 @@ function love.draw()
   cam:attach()
     -- MAP
     -- Map:draw(tx, ty, sx, sy)
-    gameMap:drawLayer(gameMap.layers["Ground"])
-    gameMap:drawLayer(gameMap.layers["Trees"])
-    gameMap:drawLayer(gameMap.layers["infos"])
+    gameMap:drawLayer(gameMap.layers["ground"])
+    gameMap:drawLayer(gameMap.layers["stone"])
+    gameMap:drawLayer(gameMap.layers["house"])
+    gameMap:drawLayer(gameMap.layers["object"])
 
     -- PLAYER
     -- Player:draw(spriteSheet, x, y, r, sx, sy)
-    player.anim:draw(player.spriteSheet, player.x, player.y, nil, 2, 2)
+    player.anim:draw(player.spriteSheet, player.x, player.y, nil, 1, 1)
 
     -- ATTACK
     -- attack.anim:draw(attack.spriteSheet, player.x, player.y, rotation,scaling?, scaling?)
@@ -253,7 +254,7 @@ function love.draw()
 
     -- BAT
     for i = 1, #bats do
-      bats[i].anim:draw(bats[i].spriteSheet, bats[i].x, bats[i].y, nil, 2, 2)
+      bats[i].anim:draw(bats[i].spriteSheet, bats[i].x, bats[i].y, nil, 1, 1)
     end
 
     for i = 1, #bats do
