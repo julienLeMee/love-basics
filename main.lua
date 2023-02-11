@@ -35,14 +35,14 @@ function love.load()
 
   -- PLAYER
   player = {}
-  player.x = 400
-  player.y = 200
-  player.collider = world:newBSGRectangleCollider(400, 200, 22, 33, 20) -- (x, y, width, height, mass)
+  player.x = 20
+  player.y = 400
+  player.collider = world:newBSGRectangleCollider(20, 400, 22, 33, 20) -- (x, y, width, height, mass)
   player.collider:setFixedRotation(true)
   player.radius = 10
   player.speed = 70
   player.life = 10
-  player.dir = "up"
+  player.dir = "down"
 
   player.spriteSheet = love.graphics.newImage("sprites/player-sheet.png")
   player.grid = anim8.newGrid(12, 18, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
@@ -53,7 +53,7 @@ function love.load()
   player.animation.right = anim8.newAnimation(player.grid('1-4', 3), 0.2)
   player.animation.up = anim8.newAnimation(player.grid('1-4', 4), 0.2)
 
-  player.anim = player.animation.up
+  player.anim = player.animation.down
 
   -- ATTACK
   attack = {}
@@ -73,7 +73,7 @@ function love.load()
     bat.x = love.math.random(0, 1200)
     bat.y = love.math.random(0, 1200)
     bat.life = 10
-    bat.speed = 30
+    bat.speed = 20
     bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
     bat.grid = anim8.newGrid(16, 16, bat.spriteSheet:getWidth(), bat.spriteSheet:getHeight())
 
@@ -177,19 +177,19 @@ function love.update(dt)
       table.remove(bats, i)
     else
       if bats[i].x < player.x then
-        bats[i].x = bats[i].x + 0.3
+        bats[i].x = bats[i].x + 0.1
       end
 
       if bats[i].y < player.y then
-        bats[i].y = bats[i].y + 0.3
+        bats[i].y = bats[i].y + 0.1
       end
 
       if bats[i].x > player.x then
-        bats[i].x = bats[i].x - 0.3
+        bats[i].x = bats[i].x - 0.1
       end
 
       if bats[i].y > player.y then
-        bats[i].y = bats[i].y - 0.3
+        bats[i].y = bats[i].y - 0.1
       end
     end
   end
@@ -243,13 +243,13 @@ function love.draw()
     -- ATTACK
     -- attack.anim:draw(attack.spriteSheet, player.x, player.y, rotation,scaling?, scaling?)
     if player.dir == "left" then
-      attack.anim:draw(attack.spriteSheet, player.x - 5, player.y + 30, getRadianRotation(player.dir), 2, 2)
+      attack.anim:draw(attack.spriteSheet, player.x - 5, player.y + 30, getRadianRotation(player.dir), 1, 1)
     elseif player.dir == "down" then
-        attack.anim:draw(attack.spriteSheet, player.x + 30, player.y + 30, getRadianRotation(player.dir), 2, 2)
+        attack.anim:draw(attack.spriteSheet, player.x + 30, player.y + 30, getRadianRotation(player.dir), 1, 1)
     elseif player.dir == "up" then
-        attack.anim:draw(attack.spriteSheet, player.x - 5, player.y, getRadianRotation(player.dir), 2, 2)
+        attack.anim:draw(attack.spriteSheet, player.x - 5, player.y, getRadianRotation(player.dir), 1, 1)
     elseif player.dir == "right" then
-        attack.anim:draw(attack.spriteSheet, player.x + 30, player.y, getRadianRotation(player.dir), 2, 2)
+        attack.anim:draw(attack.spriteSheet, player.x + 30, player.y, getRadianRotation(player.dir), 1, 1)
     end
 
     -- BAT
@@ -273,7 +273,8 @@ function love.draw()
     love.graphics.setColor(255, 255, 255)
     love.graphics.printf(text, 0, 10, love.graphics.getWidth(), "center")
     love.graphics.print("Life: " .. player.life, 10, 10)
-    love.graphics.print("Enemies: " .. #bats, love.graphics.getWidth() - 100, 10)
+    -- love.graphics.print("Enemies: " .. #bats, love.graphics.getWidth() - 100, 10)
+    love.graphics.print("x: " .. player.x .. " y: " .. player.y, love.graphics.getWidth() - 200, 10)
 
 end
 
