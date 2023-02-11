@@ -9,7 +9,7 @@ return {
   height = 30,
   tilewidth = 64,
   tileheight = 64,
-  nextlayerid = 4,
+  nextlayerid = 6,
   nextobjectid = 53,
   properties = {},
   tilesets = {
@@ -40,6 +40,35 @@ return {
       properties = {},
       wangsets = {},
       tilecount = 54,
+      tiles = {}
+    },
+    {
+      name = "extra",
+      firstgid = 55,
+      class = "",
+      tilewidth = 64,
+      tileheight = 64,
+      spacing = 0,
+      margin = 0,
+      columns = 10,
+      image = "overworld.png",
+      imagewidth = 640,
+      imageheight = 576,
+      objectalignment = "unspecified",
+      tilerendersize = "tile",
+      fillmode = "stretch",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 64,
+        height = 64
+      },
+      properties = {},
+      wangsets = {},
+      tilecount = 90,
       tiles = {}
     }
   },
@@ -920,6 +949,47 @@ return {
             54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
             54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
             54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54
+          }
+        }
+      }
+    },
+    {
+      type = "tilelayer",
+      x = 0,
+      y = 0,
+      width = 30,
+      height = 30,
+      id = 5,
+      name = "infos",
+      class = "",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      parallaxx = 1,
+      parallaxy = 1,
+      properties = {},
+      encoding = "lua",
+      chunks = {
+        {
+          x = 16, y = 0, width = 16, height = 16,
+          data = {
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
           }
         }
       }

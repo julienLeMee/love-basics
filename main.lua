@@ -74,8 +74,6 @@ function love.load()
     bat.y = love.math.random(0, 800)
     bat.life = 10
     bat.speed = 100
-    -- bat.collider = world:newBSGRectangleCollider(bat.x, bat.y, 22, 33, 20) -- (x, y, width, height, mass)
-    -- bat.collider:setFixedRotation(true)
     bat.spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
     bat.grid = anim8.newGrid(16, 16, bat.spriteSheet:getWidth(), bat.spriteSheet:getHeight())
 
@@ -196,20 +194,6 @@ function love.update(dt)
     end
   end
 
-  -- BATS COLLIDER
-  -- for i = 1, #bats do
-  --   bat = bats[i]
-  --   bat.x = (bat.collider:getX()) - 16
-  --   bat.y = (bat.collider:getY()) - 16
-
-    -- if bat.collider:enter("Player") then
-    --   sounds.hit:play()
-    --   player.life = player.life - 1
-    --   bat.collider:destroy()
-    --   table.remove(bats, i)
-    -- end
-  -- end
-
   cam:lookAt(player.x, player.y)
 
   -- knock back
@@ -249,6 +233,7 @@ function love.draw()
     -- Map:draw(tx, ty, sx, sy)
     gameMap:drawLayer(gameMap.layers["Ground"])
     gameMap:drawLayer(gameMap.layers["Trees"])
+    gameMap:drawLayer(gameMap.layers["infos"])
 
     -- PLAYER
     -- Player:draw(spriteSheet, x, y, r, sx, sy)
@@ -267,7 +252,6 @@ function love.draw()
     end
 
     -- BAT
-    -- bat.anim:draw(bat.spriteSheet, bat.x, bat.y, nil, 2, 2)
     for i = 1, #bats do
       bats[i].anim:draw(bats[i].spriteSheet, bats[i].x, bats[i].y, nil, 2, 2)
     end

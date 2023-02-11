@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="64" tileheight="64" infinite="1" nextlayerid="4" nextobjectid="53">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="64" tileheight="64" infinite="1" nextlayerid="6" nextobjectid="53">
  <editorsettings>
   <export target="testMap.lua" format="lua"/>
  </editorsettings>
  <tileset firstgid="1" name="test-tiles" tilewidth="64" tileheight="64" tilecount="54" columns="9">
   <image source="tileset.png" width="576" height="384"/>
+ </tileset>
+ <tileset firstgid="55" name="extra" tilewidth="64" tileheight="64" tilecount="90" columns="10">
+  <image source="overworld.png" width="640" height="576"/>
  </tileset>
  <layer id="1" name="Ground" width="30" height="30">
   <data encoding="csv">
@@ -731,6 +734,28 @@
 54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,
 54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,
 54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,54
+</chunk>
+  </data>
+ </layer>
+ <layer id="5" name="infos" width="30" height="30">
+  <data encoding="csv">
+   <chunk x="16" y="0" width="16" height="16">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,136,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </chunk>
   </data>
  </layer>
