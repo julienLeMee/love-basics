@@ -273,8 +273,7 @@ function love.draw()
     love.graphics.setColor(255, 255, 255)
     love.graphics.printf(text, 0, 10, love.graphics.getWidth(), "center")
     love.graphics.print("Life: " .. player.life, 10, 10)
-    -- love.graphics.print("Enemies: " .. #bats, love.graphics.getWidth() - 100, 10)
-    love.graphics.print("x: " .. player.x .. " y: " .. player.y, love.graphics.getWidth() - 200, 10)
+    love.graphics.print("Enemies: " .. #bats, love.graphics.getWidth() - 100, 10)
 
 end
 
