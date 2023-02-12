@@ -198,7 +198,7 @@ function love.update(dt)
 
   -- knock back
   for i = 1, #bats do
-    if bats[i].x < player.x + 35 and bats[i].x > player.x - 35 and bats[i].y < player.y + 35 and bats[i].y > player.y - 35 then
+    if bats[i].x < player.x + 20 and bats[i].x > player.x - 20 and bats[i].y < player.y + 20 and bats[i].y > player.y - 20 then
       if love.keyboard.isDown("space") then
         if player.dir == "left" then
           sounds.blip:play()
@@ -243,13 +243,13 @@ function love.draw()
     -- ATTACK
     -- attack.anim:draw(attack.spriteSheet, player.x, player.y, rotation,scaling?, scaling?)
     if player.dir == "left" then
-      attack.anim:draw(attack.spriteSheet, player.x - 5, player.y + 30, getRadianRotation(player.dir), 1, 1)
+      attack.anim:draw(attack.spriteSheet, player.x - 2, player.y + 15, getRadianRotation(player.dir), 1, 1)
     elseif player.dir == "down" then
-        attack.anim:draw(attack.spriteSheet, player.x + 30, player.y + 30, getRadianRotation(player.dir), 1, 1)
+        attack.anim:draw(attack.spriteSheet, player.x + 15, player.y + 15, getRadianRotation(player.dir), 1, 1)
     elseif player.dir == "up" then
-        attack.anim:draw(attack.spriteSheet, player.x - 5, player.y, getRadianRotation(player.dir), 1, 1)
+        attack.anim:draw(attack.spriteSheet, player.x - 2, player.y, getRadianRotation(player.dir), 1, 1)
     elseif player.dir == "right" then
-        attack.anim:draw(attack.spriteSheet, player.x + 30, player.y, getRadianRotation(player.dir), 1, 1)
+        attack.anim:draw(attack.spriteSheet, player.x + 15, player.y, getRadianRotation(player.dir), 1, 1)
     end
 
     -- BAT
