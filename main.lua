@@ -37,7 +37,7 @@ function love.load()
   player = {}
   player.x = 20
   player.y = 400
-  player.collider = world:newBSGRectangleCollider(20, 400, 10, 15, 5) -- (x, y, width, height, mass)
+  player.collider = world:newBSGRectangleCollider(20, 400, 10, 15, 1) -- (x, y, width, height, mass)
   player.collider:setFixedRotation(true)
   player.radius = 10
   player.speed = 70
@@ -260,7 +260,7 @@ function love.draw()
     end
 
     -- COLLIDER
-    world:draw()
+    -- world:draw()
 
     cam:detach()
 
