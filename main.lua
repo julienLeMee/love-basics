@@ -37,7 +37,7 @@ function love.load()
   player = {}
   player.x = 20
   player.y = 400
-  player.collider = world:newBSGRectangleCollider(20, 400, 22, 33, 20) -- (x, y, width, height, mass)
+  player.collider = world:newBSGRectangleCollider(20, 400, 10, 15, 5) -- (x, y, width, height, mass)
   player.collider:setFixedRotation(true)
   player.radius = 10
   player.speed = 70
@@ -87,8 +87,8 @@ function love.load()
 
   -- WALL
   walls = {}
-  if gameMap.layers["Walls"] then
-    for i, obj in pairs(gameMap.layers["Walls"].objects) do
+  if gameMap.layers["walls"] then
+    for i, obj in pairs(gameMap.layers["walls"].objects) do
       local wall = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height) -- (x, y, width, height, mass)
       wall:setType("static")
       table.insert(walls, wall)
@@ -168,8 +168,8 @@ function love.update(dt)
   for i = 1, #bats do
     bats[i].anim:update(dt)
   end
-  player.x = (player.collider:getX()) - 12
-  player.y = (player.collider:getY()) - 18
+  player.x = (player.collider:getX()) - 6
+  player.y = (player.collider:getY()) - 9
 
    -- bat move
   for i = #bats, 1, -1 do
@@ -217,7 +217,7 @@ function love.update(dt)
           bats[i].x = bats[i].x + 100
           bats[i].life = bats[i].life - 1
         end
-        attack.anim:draw(attack.spriteSheet, player.x + 30, player.y, getRadianRotation(player.dir), 2, 2)
+        attack.anim:draw(attack.spriteSheet, player.x + 30, player.y, getRadianRotation(player.dir), 1, 1)
       end
     else
       bats[i].spriteSheet = love.graphics.newImage("sprites/bat_anim_spritesheet.png")
@@ -255,15 +255,12 @@ function love.draw()
     -- BAT
     for i = 1, #bats do
       bats[i].anim:draw(bats[i].spriteSheet, bats[i].x, bats[i].y, nil, 1, 1)
-    end
-
-    for i = 1, #bats do
-      love.graphics.rectangle("fill", bats[i].x, bats[i].y - 20, bats[i].life, 2)
+      love.graphics.rectangle("fill", bats[i].x + 3, bats[i].y - 3, bats[i].life, 0.5)
       -- love.graphics.print(bats[i].life, bats[i].x, bats[i].y - 20)
     end
 
     -- COLLIDER
-    -- world:draw()
+    world:draw()
 
     cam:detach()
 
