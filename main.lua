@@ -4,6 +4,7 @@ local bats = {}
 
 function love.load()
 
+
   -- COMMAND INFOS
   text = " f = fullscreen, q = quit, space = attack, arrow keys = move "
 
@@ -95,9 +96,30 @@ function love.load()
     end
   end
 
+    -- QUERY
+    button = world:newRectangleCollider(10, 350, 20, 20)
+    world:addCollisionClass('Player')
+    player.collider:setCollisionClass("Player")
+
+    world:addCollisionClass('Button')
+    button:setCollisionClass("Button")
+
+
+  end
+
+  -- QUERY
+function love.keypressed(key)
+ if key == 'a' then
+   local px, py = player.collider:getPosition()
+   local colliders = world:queryCircleArea(px, py, 8, {'Button'})
+   if #colliders > 0 then
+     player.life = player.life + 1
+   end
+ end
 end
 
 function love.update(dt)
+
 
   if love.keyboard.isDown("f") then
     love.window.setFullscreen(true, "desktop")
@@ -260,7 +282,7 @@ function love.draw()
     end
 
     -- COLLIDER
-    -- world:draw()
+    world:draw()
 
     cam:detach()
 
